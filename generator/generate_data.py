@@ -18,7 +18,7 @@ import numpy as np
 #         for ligne in my_reader:
 #             my_writer.writerow([ligne[0]])
 
-conn = sqlite3.connect('Database/tests.db')
+conn = sqlite3.connect('database/company.db')
 cursor = conn.cursor()
 
 # df = pandas.read_csv('Dictionary/Prenom.csv', header=2)
@@ -143,10 +143,10 @@ cursor.execute('''
     );
 ''')
 
-nationalities = ["USA", "Canada", "UK", "Australia", "Germany", "France", "Japan", "China", "India", "Brazil", "Mexico", "Spanish", "Swiss", "Belgium", "Netherlands", "Finland", "Italia"]
-for i in range(1, 18):
-    country = nationalities[i - 1]
-    cursor.execute('INSERT INTO nationality (idNationality, Country) VALUES (?, ?);', (i, country))
+# nationalities = ["USA", "Canada", "UK", "Australia", "Germany", "France", "Japan", "China", "India", "Brazil", "Mexico", "Spanish", "Swiss", "Belgium", "Netherlands", "Finland", "Italia"]
+# for i in range(1, 18):
+#     country = nationalities[i - 1]
+#     cursor.execute('INSERT INTO nationality (idNationality, Country) VALUES (?, ?);', (i, country))
 
 conn.commit()
 conn.close()
