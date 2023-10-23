@@ -149,6 +149,6 @@ cursor.execute('''
 #     cursor.execute('INSERT INTO nationality (idNationality, Country) VALUES (?, ?);', (i, country))
 
 conn.commit()
-conn.close()
+conn.close() 
 
 print("Data insertion completed.")
