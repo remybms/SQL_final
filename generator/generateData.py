@@ -144,26 +144,57 @@ cursor.execute('''
 ''')
 
 depType = ["Production", "Marketing", "HumainRessources", "WeaponTraffic"]
-for i in range(1, 3):
-    dType = depType[i - 1]
+for i in range(0, 4):
+    dType = depType[i]
     cursor.execute('INSERT INTO departmentsType (idDepartmentType, Title) VALUES (?, ?);', (i, dType))
 
 depName = ["Business&Co", "LikeU", "WeAreUpon", "DrinkAlot", "AssaultCompany"]
 depidtype = [1, 2, 0, 0, 3]
-for i in range(1, 5):
-    dName = depName[i - 1]
-    dIdType = depidtype[i - 1]
+for i in range(0, 5):
+    dName = depName[i]
+    dIdType = depidtype[i]
     cursor.execute('INSERT INTO departments (idDepartment, Name, idType) VALUES (?, ?, ?);', (i, dName, dIdType))
 
-postsName = ["Developper", "Marketing Manager", "HR Manager", "Production Manager", "Company Chief", "Delivery Person", "Production Worker", "Coach leaderShip", "Coach Hapiness"]
-listDescription = ["They have to developpe the website and the application of the company", "He/She has to negociate all the contract and take care about the comany image"
-                   , "He/She has to take care about the recrutement of new rookies or expert", "He/She has to take care about the proper functioning of the factory and the deliveries"
-                   , "He/She has to lead the company and take all the decisions", "They have to deliver packages around the world", "They have to create all the items for the company"
+postsName = ["Marketing Manager", "HR Manager", "Production Manager", "Delivery Person", "Production Worker", "Developper", "Coach leaderShip", "Coach Hapiness"]
+listDescription = ["He/She has to negociate all the contract and take care about the comany image", "He/She has to take care about the recrutement of new rookies or expert"
+                   , "He/She has to take care about the proper functioning of the factory and the deliveries", "They have to deliver packages around the world"
+                   , "They have to create all the items for the company","They have to developpe the website and the application of the company"
                    , "They have to train new manager", "They have to keep everyone happy"]
-for i in range(1, 9):
-    pName = postsName[i - 1]
-    listDesc = listDescription[i - 1]
+for i in range(0, 8):
+    pName = postsName[i]
+    listDesc = listDescription[i]
     cursor.execute('INSERT INTO posts (idPost, Name, Description) VALUES (?, ?, ?);', (i, pName, listDesc))
+
+def switch_post(i):
+    if (0 <= i < 15):
+        return(i % 3)
+    elif (15 <= i <= 75):
+        return(4)
+    elif (76 <= i <= 150):
+        return(5)
+    elif (150 < i < 200):
+        return(random.randint(5, 8))
+
+def switch_dep(i):
+    if (0 <= i < 15):
+        return(i % 5)
+    elif (15 <= i <= 200):
+        return(random.randint(0, 4))
+
+listidEmpl = []
+isFind = False
+for i in range(0, 200):
+    isFind = False
+    idEmpl = random.randint(0, 200)
+    idPost = switch_post(i)
+    idDep = switch_dep(i)
+    while (isFind != True):
+        if idEmpl in listidEmpl:
+            idEmpl = random.randint(0, 200)
+        else:
+            isFind = True
+            listidEmpl.append(idEmpl)
+    cursor.execute('INSERT INTO employeeDepartments (idEmployeeDepartement, idEmployee, idPost, idDepartments) VALUES (?, ?, ?, ?);', (i, idEmpl, idPost, idDep))
 
 conn.commit()
 conn.close()
