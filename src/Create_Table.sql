@@ -92,3 +92,5 @@ CREATE TABLE IF NOT EXISTS easterEgg
     FOREIGN KEY(idWeapon) REFERENCES weapons(idWeapon),
     FOREIGN KEY(idClient) REFERENCES clients(idClient)
 );
+
+INSERT INTO IF NOT EXISTS

@@ -143,12 +143,29 @@ cursor.execute('''
     );
 ''')
 
-# nationalities = ["USA", "Canada", "UK", "Australia", "Germany", "France", "Japan", "China", "India", "Brazil", "Mexico", "Spanish", "Swiss", "Belgium", "Netherlands", "Finland", "Italia"]
-# for i in range(1, 18):
-#     country = nationalities[i - 1]
-#     cursor.execute('INSERT INTO nationality (idNationality, Country) VALUES (?, ?);', (i, country))
+depType = ["Production", "Marketing", "HumainRessources", "WeaponTraffic"]
+for i in range(1, 3):
+    dType = depType[i - 1]
+    cursor.execute('INSERT INTO departmentsType (idDepartmentType, Title) VALUES (?, ?);', (i, dType))
+
+depName = ["Business&Co", "LikeU", "WeAreUpon", "DrinkAlot", "AssaultCompany"]
+depidtype = [1, 2, 0, 0, 3]
+for i in range(1, 5):
+    dName = depName[i - 1]
+    dIdType = depidtype[i - 1]
+    cursor.execute('INSERT INTO departments (idDepartment, Name, idType) VALUES (?, ?, ?);', (i, dName, dIdType))
+
+postsName = ["Developper", "Marketing Manager", "HR Manager", "Production Manager", "Company Chief", "Delivery Person", "Production Worker", "Coach leaderShip", "Coach Hapiness"]
+listDescription = ["They have to developpe the website and the application of the company", "He/She has to negociate all the contract and take care about the comany image"
+                   , "He/She has to take care about the recrutement of new rookies or expert", "He/She has to take care about the proper functioning of the factory and the deliveries"
+                   , "He/She has to lead the company and take all the decisions", "They have to deliver packages around the world", "They have to create all the items for the company"
+                   , "They have to train new manager", "They have to keep everyone happy"]
+for i in range(1, 9):
+    pName = postsName[i - 1]
+    listDesc = listDescription[i - 1]
+    cursor.execute('INSERT INTO posts (idPost, Name, Description) VALUES (?, ?, ?);', (i, pName, listDesc))
 
 conn.commit()
-conn.close() 
+conn.close()
 
 print("Data insertion completed.")
