@@ -8,15 +8,17 @@
 import random
 
 def generate_random_french_phone_number():
-    prefix = ["06", "07"]
-    phone_number = prefix[random.randint(0, 1)]
+    phone_number = "+33"
+    prefix = ["6", "7"]
+    phone_number += prefix[random.randint(0, 1)]
     for _ in range(8):
         phone_number += str(random.randint(0, 9))
     return phone_number
 
 phone_numbers = [generate_random_french_phone_number() for _ in range(1000)]
 
-with open("numeros_telephone_francais.csv", "w") as file:
+with open("csv/phonesFr.csv", "w") as file:
     file.write("Tel\n")
     for phone_number in phone_numbers:
         file.write(f"{phone_number}\n")
+file.close()
