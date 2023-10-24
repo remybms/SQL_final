@@ -8,9 +8,8 @@
 import sqlite3
 import random
 import numpy as np
+from csv import reader
 
-# import csv
- 
 # with open("Dictionary/Prenoms.csv", "r") as fsrce:
 #     with open("PrenomsTable.csv", "w", newline='') as fdest:
 #         my_reader = csv.reader(fsrce, delimiter = ';')
@@ -195,6 +194,80 @@ for i in range(0, 200):
             isFind = True
             listidEmpl.append(idEmpl)
     cursor.execute('INSERT INTO employeeDepartments (idEmployeeDepartement, idEmployee, idPost, idDepartments) VALUES (?, ?, ?, ?);', (i, idEmpl, idPost, idDep))
+
+FirstName = []
+LastName = []
+PhoneNumber = []
+HireDate = []
+BirthDate = []
+
+with open("csv/prenom.csv", "r") as file:
+    file_reader = reader(file)
+    for FirstN in file:
+        for i in file_reader:
+            FirstName.append(i[0][:1] + i[0][1:].lower())
+file.close()
+
+with open("csv/patronymes.csv", "r") as file:
+    file_reader = reader(file)
+    for LastN in file:
+        for i in file_reader:
+            LastName.append(i[0][:1] + i[0][1:].lower())
+file.close()
+
+with open("csv/phonesFr.csv", "r") as file:
+    file_reader = reader(file)
+    for phone_number in file:
+        for i in file_reader:
+            PhoneNumber.append(i[0])
+file.close()
+
+with open("csv/birthDates.csv", "r") as file:
+    file_reader = reader(file)
+    for birth in file:
+        for i in file_reader:
+            BirthDate.append(i[0])
+file.close()
+
+with open("csv/birthDates.csv", "r") as file:
+    file_reader = reader(file)
+    for hire in file:
+        for i in file_reader:
+            HireDate.append(i[0])
+file.close()
+
+for i in range(0, 1000):
+    isFindH = False
+    isFindB = False
+    isFindP = False
+    hireH = []
+    hireB = []
+    Phones = []
+    FirstN = FirstName[random.randint(0, 209309)]
+    LastN = LastName[random.randint(0, 879421)]
+    Phone = PhoneNumber[random.randint(0, 999)]
+    while (isFindP != True):
+        if Phone in Phones:
+            Phone = PhoneNumber[random.randint(0, 999)]
+        else:
+            isFindP = True
+            Phones.append(Phone)
+    Salary = random.randint(1600, 3500)
+    HireD = HireDate[random.randint(0, 999)]
+    while (isFindH != True):
+        if HireD in hireH:
+            HireD = HireDate[random.randint(0, 999)]
+        else:
+            isFindH = True
+            hireH.append(HireD)
+    BirthD = BirthDate[random.randint(0, 999)]
+    while (isFindB != True):
+        if HireD in hireB:
+            HireD = BirthDate[random.randint(0, 999)]
+        else:
+            isFindB = True
+            hireB.append(HireD)
+    cursor.execute('INSERT INTO employees (idEmployee, FirstName, LastName, PhoneNumber, Salary, HireDate, BirthDate) VALUES (?, ?, ?, ?, ?, ?, ?);', (i, FirstN, LastN, Phone, Salary, BirthD, HireD))
 
 conn.commit()
 conn.close()
