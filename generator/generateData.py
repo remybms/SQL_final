@@ -132,27 +132,30 @@ cursor.execute('''
     );
 ''')
 
-depType = ["Production", "Marketing", "HumainRessources", "WeaponTraffic"]
-for i in range(0, 4):
-    dType = depType[i]
-    cursor.execute('INSERT INTO departmentsType (idDepartmentType, Title) VALUES (?, ?);', (i, dType))
+def insertDepType():
+    depType = ["Production", "Marketing", "HumainRessources", "WeaponTraffic"]
+    for i in range(0, 4):
+        dType = depType[i]
+        cursor.execute('INSERT INTO departmentsType (idDepartmentType, Title) VALUES (?, ?);', (i, dType))
 
-depName = ["Business&Co", "LikeU", "WeAreUpon", "DrinkAlot", "AssaultCompany"]
-depidtype = [1, 2, 0, 0, 3]
-for i in range(0, 5):
-    dName = depName[i]
-    dIdType = depidtype[i]
-    cursor.execute('INSERT INTO departments (idDepartment, Name, idType) VALUES (?, ?, ?);', (i, dName, dIdType))
+def insertDep():
+    depName = ["Business&Co", "LikeU", "WeAreUpon", "DrinkAlot", "AssaultCompany"]
+    depidtype = [1, 2, 0, 0, 3]
+    for i in range(0, 5):
+        dName = depName[i]
+        dIdType = depidtype[i]
+        cursor.execute('INSERT INTO departments (idDepartment, Name, idType) VALUES (?, ?, ?);', (i, dName, dIdType))
 
-postsName = ["Marketing Manager", "HR Manager", "Production Manager", "Delivery Person", "Production Worker", "Developper", "Coach leaderShip", "Coach Hapiness"]
-listDescription = ["He/She has to negociate all the contract and take care about the comany image", "He/She has to take care about the recrutement of new rookies or expert"
-                   , "He/She has to take care about the proper functioning of the factory and the deliveries", "They have to deliver packages around the world"
-                   , "They have to create all the items for the company","They have to developpe the website and the application of the company"
-                   , "They have to train new manager", "They have to keep everyone happy"]
-for i in range(0, 8):
-    pName = postsName[i]
-    listDesc = listDescription[i]
-    cursor.execute('INSERT INTO posts (idPost, Name, Description) VALUES (?, ?, ?);', (i, pName, listDesc))
+def insertPosts():
+    postsName = ["Marketing Manager", "HR Manager", "Production Manager", "Delivery Person", "Production Worker", "Developper", "Coach leaderShip", "Coach Hapiness"]
+    listDescription = ["He/She has to negociate all the contract and take care about the comany image", "He/She has to take care about the recrutement of new rookies or expert"
+    , "He/She has to take care about the proper functioning of the factory and the deliveries", "They have to deliver packages around the world"
+    , "They have to create all the items for the company","They have to developpe the website and the application of the company"
+    , "They have to train new manager", "They have to keep everyone happy"]
+    for i in range(0, 8):
+        pName = postsName[i]
+        listDesc = listDescription[i]
+        cursor.execute('INSERT INTO posts (idPost, Name, Description) VALUES (?, ?, ?);', (i, pName, listDesc))
 
 def switch_post(i):
     if (0 <= i < 15):
@@ -170,107 +173,97 @@ def switch_dep(i):
     elif (15 <= i <= 200):
         return(random.randint(0, 4))
 
-listidEmpl = []
-isFind = False
-for i in range(0, 200):
+def insertEmpDep():
+    listidEmpl = []
     isFind = False
-    idEmpl = random.randint(0, 200)
-    idPost = switch_post(i)
-    idDep = switch_dep(i)
-    while (isFind != True):
-        if idEmpl in listidEmpl:
-            idEmpl = random.randint(0, 200)
+    for i in range(0, 200):
+        isFind = False
+        idEmpl = random.randint(0, 200)
+        idPost = switch_post(i)
+        idDep = switch_dep(i)
+        while (isFind != True):
+            if idEmpl in listidEmpl:
+                idEmpl = random.randint(0, 200)
+            else:
+                isFind = True
+                listidEmpl.append(idEmpl)
+        cursor.execute('INSERT INTO employeeDepartments (idEmployeeDepartement, idEmployee, idPost, idDepartments) VALUES (?, ?, ?, ?);', (i, idEmpl, idPost, idDep))
+
+def getDataFromFile(filepath, flag, tab, isName):
+    with open(filepath, flag) as file:
+        file_reader = reader(file)
+        for row in file:
+            for i in file_reader:
+                if (isName == True):
+                    tab.append(i[0][:1] + i[0][1:].lower())
+                else:
+                    tab.append(i[0])
+    file.close()
+    return (tab)
+
+def get_distinct_data(data, tab, csv_tab, i):
+    isFind = False
+    data = random.choice(csv_tab[i])
+    while not isFind:
+        if data in tab:
+            data = random.choice(csv_tab[i])
         else:
             isFind = True
-            listidEmpl.append(idEmpl)
-    cursor.execute('INSERT INTO employeeDepartments (idEmployeeDepartement, idEmployee, idPost, idDepartments) VALUES (?, ?, ?, ?);', (i, idEmpl, idPost, idDep))
+            tab.append(data)
+    return data, tab
 
-FirstName = []
-LastName = []
-PhoneNumber = []
-HireDate = []
-BirthDate = []
+def insertEmployees(FirstName, LastName, PhoneNumbers, BirthDates, HireDates):
+    HireTab = []
+    BirthTab = []
+    PhonesTab = []
+    Phone = 0
+    HireData = 0
+    BirthData = 0
+    csv_tab = [PhoneNumbers, BirthDates, HireDates]
+    for i in range(0, 200):
+        First = random.choice(FirstName)
+        Last = random.choice(LastName)
+        Salary = random.randint(1600, 3500)
+        Phone, PhonesTab = get_distinct_data(Phone, PhonesTab, csv_tab, 0)
+        HireData, HireTab = get_distinct_data(HireData, HireTab, csv_tab, 1)
+        BirthData, BirthTab = get_distinct_data(BirthData, BirthTab, csv_tab, 2)
+        cursor.execute('INSERT INTO employees (idEmployee, FirstName, LastName, PhoneNumber, Salary, HireDate, BirthDate) VALUES (?, ?, ?, ?, ?, ?, ?);', (i, First, Last, Phone, Salary, HireData, BirthData))
 
-with open("csv/prenom.csv", "r") as file:
-    file_reader = reader(file)
-    for FirstN in file:
-        for i in file_reader:
-            FirstName.append(i[0][:1] + i[0][1:].lower())
-file.close()
+def insertClients(FirstName, LastName):
+    for i in range(0, 3500):
+        FirstNC = FirstName[random.randint(0, 209309)]
+        LastNC = LastName[random.randint(0, 879421)]
+        cursor.execute('INSERT INTO clients (idClient, FirstName, LastName) VALUES (?, ?, ?);', (i, FirstNC, LastNC))
 
-with open("csv/patronymes.csv", "r") as file:
-    file_reader = reader(file)
-    for LastN in file:
-        for i in file_reader:
-            LastName.append(i[0][:1] + i[0][1:].lower())
-file.close()
+def insertBeerType():
+    beerType = ["The beers to keep", "Lager beers", "Triple beers", "Abbey beers", "Barrel-aged beers", "India Pale Ale beers", "White beers"]
+    for i in range(0, 7):
+        cursor.execute('INSERT INTO beerTypes (idBeerType, Type) VALUES (?, ?);', (i, beerType[i]))
 
-with open("csv/phonesFr.csv", "r") as file:
-    file_reader = reader(file)
-    for phone_number in file:
-        for i in file_reader:
-            PhoneNumber.append(i[0])
-file.close()
+def insertProducts(Products):
+    for i in range(len(Products)):
+        Price = random.randint(25, 90)
+        cursor.execute('INSERT INTO products (idProduct, Name, Price, salesDate, idBeerType, Stock) VALUES (?, ?, ?, ?, ?, ?);', (i, Products[i], Price))
 
-with open("csv/birthDates.csv", "r") as file:
-    file_reader = reader(file)
-    for birth in file:
-        for i in file_reader:
-            BirthDate.append(i[0])
-file.close()
+def main():
+    FirstName, LastName, PhoneNumber, HireDate, BirthDate, Products = [], [], [], [], [], []
+    insertDepType()
+    insertDep()
+    insertPosts()
+    insertEmpDep()
+    FirstName = getDataFromFile("csv/prenom.csv", "r", FirstName, True)
+    LastName = getDataFromFile("csv/patronymes.csv", "r", LastName, True)
+    PhoneNumber = getDataFromFile("csv/phonesFr.csv", "r", PhoneNumber, False)
+    BirthDate = getDataFromFile("csv/birthDates.csv", "r", BirthDate, False)
+    HireDate = getDataFromFile("csv/hireDates.csv", "r", HireDate, False)
+    Products = getDataFromFile("csv/products.csv", "r", Products, False)
+    insertEmployees(FirstName, LastName, PhoneNumber, BirthDate, HireDate)
+    insertClients(FirstName, LastName)
+    insertBeerType()
+    # insertProducts()
 
-with open("csv/birthDates.csv", "r") as file:
-    file_reader = reader(file)
-    for hire in file:
-        for i in file_reader:
-            HireDate.append(i[0])
-file.close()
-
-for i in range(0, 1000):
-    isFindH = False
-    isFindB = False
-    isFindP = False
-    hireH = []
-    hireB = []
-    Phones = []
-    FirstN = FirstName[random.randint(0, 209309)]
-    LastN = LastName[random.randint(0, 879421)]
-    Phone = PhoneNumber[random.randint(0, 999)]
-    while (isFindP != True):
-        if Phone in Phones:
-            Phone = PhoneNumber[random.randint(0, 999)]
-        else:
-            isFindP = True
-            Phones.append(Phone)
-    Salary = random.randint(1600, 3500)
-    HireD = HireDate[random.randint(0, 999)]
-    while (isFindH != True):
-        if HireD in hireH:
-            HireD = HireDate[random.randint(0, 999)]
-        else:
-            isFindH = True
-            hireH.append(HireD)
-    BirthD = BirthDate[random.randint(0, 999)]
-    while (isFindB != True):
-        if HireD in hireB:
-            HireD = BirthDate[random.randint(0, 999)]
-        else:
-            isFindB = True
-            hireB.append(HireD)
-    cursor.execute('INSERT INTO employees (idEmployee, FirstName, LastName, PhoneNumber, Salary, HireDate, BirthDate) VALUES (?, ?, ?, ?, ?, ?, ?);', (i, FirstN, LastN, Phone, Salary, BirthD, HireD))
-
-for i in range(0, 3500):
-    FirstNC = FirstName[random.randint(0, 209309)]
-    LastNC = LastName[random.randint(0, 879421)]
-    cursor.execute('INSERT INTO clients (idClient, FirstName, LastName) VALUES (?, ?, ?);', (i, FirstNC, LastNC))
-
-beerType = ["The beers to keep", "Lager beers", "Triple beers", "Abbey beers", "Barrel-aged beers", "India Pale Ale beers", "White beers"]
-for i in range(0, 7):
-    cursor.execute('INSERT INTO beerTypes (idBeerType, Type) VALUES (?, ?);', (i, beerType[i]))
-
-
+main()
 # for i in range(0, 10000):
-#     idProd = random.randint(0, )
 #     cursor.execute('INSERT INTO invoices (idInvoice, idProduct, idClient) VALUES (?, ?, ?);', (i, FirstNC, LastNC))
 conn.commit()
 conn.close()
