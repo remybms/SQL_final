@@ -10,18 +10,8 @@ import random
 import numpy as np
 from csv import reader
 
-# with open("Dictionary/Prenoms.csv", "r") as fsrce:
-#     with open("PrenomsTable.csv", "w", newline='') as fdest:
-#         my_reader = csv.reader(fsrce, delimiter = ';')
-#         my_writer = csv.writer(fdest, delimiter = ';')
-#         for ligne in my_reader:
-#             my_writer.writerow([ligne[0]])
-
 conn = sqlite3.connect('database/company.db')
 cursor = conn.cursor()
-
-# df = pandas.read_csv('Dictionary/Prenom.csv', header=2)
-# print(df['aapeli'])
 
 def generate_clients():
     clients = ["USA", "Canada", "UK", "Australia", "Germany", "France", "Japan", "China", "India", "Brazil", "Mexico"]
@@ -90,6 +80,14 @@ cursor.execute('''
 ''')
 
 cursor.execute('''
+    CREATE TABLE IF NOT EXISTS beerTypes
+    (
+        idBeerType INTEGER NOT NULL PRIMARY KEY,
+        Type VARCHAR(50)
+    );
+''')
+
+cursor.execute('''
     CREATE TABLE IF NOT EXISTS invoices
     (
         idInvoice INTEGER NOT NULL PRIMARY KEY,
@@ -97,14 +95,6 @@ cursor.execute('''
         idClient INTEGER NOT NULL,
         FOREIGN KEY(idProduct) REFERENCES products(idProduct),
         FOREIGN KEY(idClient) REFERENCES clients(idClient)
-    );
-''')
-
-cursor.execute('''
-    CREATE TABLE IF NOT EXISTS beerTypes
-    (
-        idBeerType INTEGER NOT NULL PRIMARY KEY,
-        Type VARCHAR(50)
     );
 ''')
 
@@ -269,6 +259,19 @@ for i in range(0, 1000):
             hireB.append(HireD)
     cursor.execute('INSERT INTO employees (idEmployee, FirstName, LastName, PhoneNumber, Salary, HireDate, BirthDate) VALUES (?, ?, ?, ?, ?, ?, ?);', (i, FirstN, LastN, Phone, Salary, BirthD, HireD))
 
+for i in range(0, 3500):
+    FirstNC = FirstName[random.randint(0, 209309)]
+    LastNC = LastName[random.randint(0, 879421)]
+    cursor.execute('INSERT INTO clients (idClient, FirstName, LastName) VALUES (?, ?, ?);', (i, FirstNC, LastNC))
+
+beerType = ["The beers to keep", "Lager beers", "Triple beers", "Abbey beers", "Barrel-aged beers", "India Pale Ale beers", "White beers"]
+for i in range(0, 7):
+    cursor.execute('INSERT INTO beerTypes (idBeerType, Type) VALUES (?, ?);', (i, beerType[i]))
+
+
+# for i in range(0, 10000):
+#     idProd = random.randint(0, )
+#     cursor.execute('INSERT INTO invoices (idInvoice, idProduct, idClient) VALUES (?, ?, ?);', (i, FirstNC, LastNC))
 conn.commit()
 conn.close()
 

@@ -49,16 +49,6 @@ CREATE TABLE IF NOT EXISTS clients
     LastName VARCHAR(50)
 );
 
-CREATE TABLE IF NOT EXISTS invoices
-(
-    idInvoice INTEGER NOT NULL PRIMARY KEY,
-    idProduct INTEGER NOT NULL,
-    idClient INTEGER NOT NULL,
-    FOREIGN KEY(idProduct) REFERENCES products(idProduct),
-    FOREIGN KEY(idClient) REFERENCES clients(idClient)
-);
-
-
 CREATE TABLE IF NOT EXISTS beerTypes
 (
     idBeerType INTEGER NOT NULL PRIMARY KEY,
@@ -73,6 +63,15 @@ CREATE TABLE IF NOT EXISTS products
     SalesDate DATE,
     idBeerType INTEGER NOT NULL,
     Stock INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS invoices
+(
+    idInvoice INTEGER NOT NULL PRIMARY KEY,
+    idProduct INTEGER NOT NULL,
+    idClient INTEGER NOT NULL,
+    FOREIGN KEY(idProduct) REFERENCES products(idProduct),
+    FOREIGN KEY(idClient) REFERENCES clients(idClient)
 );
 
 CREATE TABLE IF NOT EXISTS weapons
