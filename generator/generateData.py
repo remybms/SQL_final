@@ -8,6 +8,7 @@
 import sqlite3
 import random
 import numpy as np
+import csv
 from csv import reader
 
 conn = sqlite3.connect('database/company.db')
@@ -114,7 +115,10 @@ cursor.execute('''
     CREATE TABLE IF NOT EXISTS weapons
     (
         idWeapon INTEGER NOT NULL PRIMARY KEY,
-        Name VARCHAR(50),
+        ReferenceRGA VARCHAR(50),
+        WeaponType VARCHAR(50),
+        FabCountry VARCHAR(50),
+        Family VARCHAR(50),
         Price INTEGER NOT NULL,
         SalesDate DATE,
         Stock INTEGER
@@ -157,7 +161,7 @@ def insertPosts():
         listDesc = listDescription[i]
         cursor.execute('INSERT INTO posts (idPost, Name, Description) VALUES (?, ?, ?);', (i, pName, listDesc))
 
-def switch_post(i):
+def switchPost(i):
     if (0 <= i < 15):
         return(i % 3)
     elif (15 <= i <= 75):
@@ -167,7 +171,7 @@ def switch_post(i):
     elif (150 < i < 200):
         return(random.randint(5, 8))
 
-def switch_dep(i):
+def switchDep(i):
     if (0 <= i < 15):
         return(i % 5)
     elif (15 <= i <= 200):
@@ -179,8 +183,8 @@ def insertEmpDep():
     for i in range(0, 200):
         isFind = False
         idEmpl = random.randint(0, 200)
-        idPost = switch_post(i)
-        idDep = switch_dep(i)
+        idPost = switchPost(i)
+        idDep = switchDep(i)
         while (isFind != True):
             if idEmpl in listidEmpl:
                 idEmpl = random.randint(0, 200)
@@ -189,15 +193,15 @@ def insertEmpDep():
                 listidEmpl.append(idEmpl)
         cursor.execute('INSERT INTO employeeDepartments (idEmployeeDepartement, idEmployee, idPost, idDepartments) VALUES (?, ?, ?, ?);', (i, idEmpl, idPost, idDep))
 
-def getDataFromFile(filepath, flag, tab, isName):
+def getDataFromFile(filepath, flag, tab, isName, col):
     with open(filepath, flag) as file:
         file_reader = reader(file)
         for row in file:
-            for i in file_reader:
+            for data in file_reader:
                 if (isName == True):
-                    tab.append(i[0][:1] + i[0][1:].lower())
+                    tab.append(data[col][:1] + data[col][1:].lower())
                 else:
-                    tab.append(i[0])
+                    tab.append(data[col])
     file.close()
     return (tab)
 
@@ -236,35 +240,84 @@ def insertClients(FirstName, LastName):
         cursor.execute('INSERT INTO clients (idClient, FirstName, LastName) VALUES (?, ?, ?);', (i, FirstNC, LastNC))
 
 def insertBeerType():
-    beerType = ["The beers to keep", "Lager beers", "Triple beers", "Abbey beers", "Barrel-aged beers", "India Pale Ale beers", "White beers"]
-    for i in range(0, 7):
+    beerType = ["Blonde", "Special Blonde", "Dark/Black", "Amber", "White", "Fruit"]
+    for i in range(0, 6):
         cursor.execute('INSERT INTO beerTypes (idBeerType, Type) VALUES (?, ?);', (i, beerType[i]))
 
-def insertProducts(Products):
-    for i in range(len(Products)):
+def insertProducts(Products, SalesDate, TypeBeer):
+    SalesTab = []
+    Sales = 0
+    csv_tab = [SalesDate]
+    for i in range(0, 250):
+        Prod = Products[i % 40]
+        Type = TypeBeer[i % 40]
         Price = random.randint(25, 90)
-        cursor.execute('INSERT INTO products (idProduct, Name, Price, salesDate, idBeerType, Stock) VALUES (?, ?, ?, ?, ?, ?);', (i, Products[i], Price))
+        Sales, SalesTab = get_distinct_data(Sales, SalesTab, csv_tab, 0)
+        Stock = random.randint(1000, 25000)
+        cursor.execute('INSERT INTO products (idProduct, Name, Price, salesDate, idBeerType, Stock) VALUES (?, ?, ?, ?, ?, ?);', (i, Prod, Price, Sales, Type, Stock))
+
+def insertWeapons(Weapons, SalesDate):
+    SalesTab = []
+    Sales = 0
+    csv_tab = [SalesDate]
+    for i in range(0, 200):
+        Ref = Weapons[0][i % 56107]
+        Type = Weapons[2][i % 56107]
+        Family = Weapons[1][i % 56107]
+        FabCo = Weapons[6][i % 56107]
+        Price = random.randint(25000, 90000)
+        Sales, SalesTab = get_distinct_data(Sales, SalesTab, csv_tab, 0)
+        Stock = random.randint(10000, 250000)
+        cursor.execute('INSERT INTO weapons (idWeapon, ReferenceRGA, WeaponType, Family, FabCountry, Price, SalesDate, Stock) VALUES (?, ?, ?, ?, ?, ?, ?, ?);', (i, Ref, Type, Family, FabCo, Price, Sales, Stock))
+
+def getWeaponsFromFile(filepath, tab, i):
+    with open(filepath, newline='', encoding='ISO-8859-1') as file:
+        file_reader = csv.reader(file, delimiter=';')
+        for row in file:
+            for data in file_reader:
+                tab.append(data[i])
+    return (tab)
+
+def insertInvoices():
+    for i in range(0, 200):
+        idProd = random.randint(0, 249)
+        idCli = random.randint(0, 3500)
+        cursor.execute('INSERT INTO invoices (idInvoice, idProduct, idClient) VALUES (?, ?, ?);', (i, idProd, idCli))
+
+def insertEasterEgg():
+    for i in range(0, 200):
+        idWeapon = random.randint(0, 200)
+        idCli = random.randint(0, 3500)
+        cursor.execute('INSERT INTO easterEgg (idEasterEgg, idClient, idWeapon) VALUES (?, ?, ?);', (i, idCli, idWeapon))
 
 def main():
-    FirstName, LastName, PhoneNumber, HireDate, BirthDate, Products = [], [], [], [], [], []
+    FirstName, LastName, PhoneNumber, HireDate, BirthDate = [], [], [], [], []
+    Products, SalesDate, TypeBeer = [], [], []
+    ref, family, WeaponType, brand, model, fab, coFab = [], [], [], [], [], [], []
+    Weapons = [ref, family, WeaponType, brand, model, fab, coFab]
     insertDepType()
     insertDep()
     insertPosts()
     insertEmpDep()
-    FirstName = getDataFromFile("csv/prenom.csv", "r", FirstName, True)
-    LastName = getDataFromFile("csv/patronymes.csv", "r", LastName, True)
-    PhoneNumber = getDataFromFile("csv/phonesFr.csv", "r", PhoneNumber, False)
-    BirthDate = getDataFromFile("csv/birthDates.csv", "r", BirthDate, False)
-    HireDate = getDataFromFile("csv/hireDates.csv", "r", HireDate, False)
-    Products = getDataFromFile("csv/products.csv", "r", Products, False)
+    FirstName = getDataFromFile("csv/prenom.csv", "r", FirstName, True, 0)
+    LastName = getDataFromFile("csv/patronymes.csv", "r", LastName, True, 0)
+    PhoneNumber = getDataFromFile("csv/phonesFr.csv", "r", PhoneNumber, False, 0)
+    BirthDate = getDataFromFile("csv/birthDates.csv", "r", BirthDate, False, 0)
+    HireDate = getDataFromFile("csv/hireDates.csv", "r", HireDate, False, 0)
+    Products = getDataFromFile("csv/products.csv", "r", Products, False, 0)
+    SalesDate = getDataFromFile("csv/salesDates.csv", "r", SalesDate, False, 0)
+    TypeBeer = getDataFromFile("csv/productType.csv", "r", TypeBeer, False, 0)
+    for i in range(0, 7):
+        Weapons[i].append([getWeaponsFromFile("csv/weapons.csv", Weapons[i], i)])
     insertEmployees(FirstName, LastName, PhoneNumber, BirthDate, HireDate)
     insertClients(FirstName, LastName)
     insertBeerType()
-    # insertProducts()
+    insertProducts(Products, SalesDate, TypeBeer)
+    insertWeapons(Weapons, SalesDate)
+    insertInvoices()
+    insertEasterEgg()
 
 main()
-# for i in range(0, 10000):
-#     cursor.execute('INSERT INTO invoices (idInvoice, idProduct, idClient) VALUES (?, ?, ?);', (i, FirstNC, LastNC))
 conn.commit()
 conn.close()
 
