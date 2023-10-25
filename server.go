@@ -53,11 +53,7 @@ func displayEmployees(w http.ResponseWriter, r *http.Request) {
 	if error != nil {
 		panic(error)
 	}
-	employees, err := getEmployeesFromDB()
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	employees := getEmployeesFromDB()
 
 	tmpl.ExecuteTemplate(w, "main", employees)
 }

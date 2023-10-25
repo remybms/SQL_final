@@ -2,40 +2,46 @@ package SQL
 
 import (
 	"database/sql"
+	"fmt"
 
 	_ "github.com/mattn/go-sqlite3"
 )
 
 type Employee struct {
-	id        int
-	firstName string
-	lastName  string
+	Id        int
+	FirstName string
+	LastName  string
 }
 
-func getEmployeesFromDB() ([]Employee, error) {
+type EmployeesArray struct {
+	Employees []Employee
+}
+
+func getEmployeesFromDB() EmployeesArray {
 	db, err := sql.Open("sqlite3", "database/company.db")
 	if err != nil {
-		return nil, err
+		panic(err)
 	}
 	rows, err := db.Query("SELECT idEmployee, FirstName, LastName FROM employees")
 	if err != nil {
-		return nil, err
+		panic(err)
 	}
 	defer rows.Close()
 
-	var employees []Employee
+	var employees EmployeesArray
 	for rows.Next() {
 		var employee Employee
-		err := rows.Scan(&employee.id, &employee.firstName, &employee.lastName)
+		err := rows.Scan(&employee.Id, &employee.FirstName, &employee.LastName)
 		if err != nil {
-			return nil, err
+			panic(err)
 		}
-		employees = append(employees, employee)
+		employees.Employees = append(employees.Employees, employee)
 	}
+	fmt.Println(employees)
 
 	if err = rows.Err(); err != nil {
-		return nil, err
+		panic(err)
 	}
 
-	return employees, nil
+	return employees
 }

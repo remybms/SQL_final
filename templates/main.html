@@ -11,7 +11,13 @@
     <title>chut !</title>
 </head>
 
+
 <body>
+    {{range .Employees}}
+        <div>{{.Id}}</div>
+        <div>{{.FirstName}}</div>
+        <div>{{.LastName}}</div>
+    {{end}}
 </body>
 </html>
 
