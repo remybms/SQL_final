@@ -2,7 +2,6 @@ package SQL
 
 import (
 	"database/sql"
-	"fmt"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -37,7 +36,6 @@ func getEmployeesFromDB() EmployeesArray {
 		}
 		employees.Employees = append(employees.Employees, employee)
 	}
-	fmt.Println(employees)
 
 	if err = rows.Err(); err != nil {
 		panic(err)
