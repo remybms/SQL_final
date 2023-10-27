@@ -1,0 +1,28 @@
+{{define "create"}}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="assets/main.css">
+    <link rel="shortcut icon" href="assets/images/favicon.ico">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>je crée des emplois</title>
+</head>
+
+<body>
+    <form action="/createemployee-form" method="post" class="form">
+        <input type="text" name="firstName" placeholder="first name" class="inputleft" required>
+        <input type="text" name="lastName" placeholder="last name" class="inputright" required>
+        <input type="number" name="salary" id="emailInput" placeholder="salary" class="inputmiddle" required>
+        <input type="number" name="phoneNumber" placeholder="téléphone" class="inputmiddle" required>
+        <input type="date" name="hireDate" placeholder="hire date" class="inputmiddle" required>
+        <input type="date" name="birthDate" placeholder="birthdate" class="inputleft" required>
+        <button type="submit" value="login" id="submit_button" class="submit">submit</button>
+    </form>
+
+</body>
+</html>
+
+{{end}}
