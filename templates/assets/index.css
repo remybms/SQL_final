@@ -94,7 +94,7 @@ div:hover {
   color: #fff;
 }
 
-.employee-id, .employee-firstname, .employee-lastname {
+.employee-id, .employee-firstname, .employee-lastname, .employee-post, .employee-department {
   margin: 10px;
   font-size: 18px;
 }

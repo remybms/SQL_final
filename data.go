@@ -7,9 +7,11 @@ import (
 )
 
 type Employee struct {
-	Id        int
-	FirstName string
-	LastName  string
+	Id         int
+	FirstName  string
+	LastName   string
+	Post       string
+	Department string
 }
 
 type EmployeesArray struct {
@@ -21,7 +23,7 @@ func getEmployeesFromDB() EmployeesArray {
 	if err != nil {
 		panic(err)
 	}
-	rows, err := db.Query("SELECT idEmployee, FirstName, LastName FROM employees")
+	rows, err := db.Query("SELECT employees.idEmployee, employees.FirstName, employees.LastName, posts.Name, departments.Name FROM employees INNER JOIN posts ON employees.idPost = posts.idPost INNER JOIN departments ON employees.idDepartment = departments.idDepartment")
 	if err != nil {
 		panic(err)
 	}
@@ -30,7 +32,7 @@ func getEmployeesFromDB() EmployeesArray {
 	var employees EmployeesArray
 	for rows.Next() {
 		var employee Employee
-		err := rows.Scan(&employee.Id, &employee.FirstName, &employee.LastName)
+		err := rows.Scan(&employee.Id, &employee.FirstName, &employee.LastName, &employee.Post, &employee.Department)
 		if err != nil {
 			panic(err)
 		}
