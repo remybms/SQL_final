@@ -116,7 +116,6 @@ func getEmployeesSortedFromDB(sort string) EmployeesArray {
 	} else {
 		sorted = "employees.idEmployee"
 	}
-	fmt.Println(sort)
 	db, err := sql.Open("sqlite3", "database/company.db")
 	if err != nil {
 		panic(err)
