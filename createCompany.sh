@@ -1,3 +1,3 @@
 #!/bin/bash
 
-python3 generator/generate_data.py
+python3 generator/generateData.py
