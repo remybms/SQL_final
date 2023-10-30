@@ -14,20 +14,12 @@ from csv import reader
 conn = sqlite3.connect('database/company.db')
 cursor = conn.cursor()
 
-def generate_clients():
-    clients = ["USA", "Canada", "UK", "Australia", "Germany", "France", "Japan", "China", "India", "Brazil", "Mexico"]
-    return random.choice(clients)
-
 cursor.execute('''
-    CREATE TABLE IF NOT EXISTS employees
+    CREATE TABLE IF NOT EXISTS posts
     (
-        idEmployee INTEGER NOT NULL PRIMARY KEY,
-        FirstName VARCHAR(50),
-        LastName VARCHAR(50),
-        PhoneNumber VARCHAR(50),
-        Salary INTEGER NOT NULL,
-        HireDate DATE,
-        BirthDate DATE
+        idPost INTEGER NOT NULL PRIMARY KEY,
+        Name VARCHAR(50),
+        Description VARCHAR(150)
     );
 ''')
 
@@ -50,24 +42,19 @@ cursor.execute('''
 ''')
 
 cursor.execute('''
-    CREATE TABLE IF NOT EXISTS posts
+    CREATE TABLE IF NOT EXISTS employees
     (
-        idPost INTEGER NOT NULL PRIMARY KEY,
-        Name VARCHAR(50),
-        Description VARCHAR(150)
-    );
-''')
-
-cursor.execute('''
-    CREATE TABLE IF NOT EXISTS employeeDepartments
-    (
-        idEmployeeDepartement INTEGER NOT NULL PRIMARY KEY,
-        idEmployee INTEGER NOT NULL,
+        idEmployee INTEGER NOT NULL PRIMARY KEY,
+        FirstName VARCHAR(50),
+        LastName VARCHAR(50),
+        PhoneNumber VARCHAR(50),
+        Salary INTEGER NOT NULL,
+        HireDate DATE,
+        BirthDate DATE,
         idPost INTEGER NOT NULL,
-        idDepartments INTEGER NOT NULL,
-        FOREIGN KEY(idEmployee) REFERENCES employees(idEmployee),
+        idDepartment INTEGER NOT NULL,
         FOREIGN KEY(idPost) REFERENCES posts(idPost),
-        FOREIGN KEY(idDepartments) REFERENCES departments(idDepartment)
+        FOREIGN KEY(idDepartment) REFERENCES departments(idDepartment)
     );
 ''')
 
@@ -151,7 +138,7 @@ def insertDep():
         cursor.execute('INSERT INTO departments (idDepartment, Name, idType) VALUES (?, ?, ?);', (i, dName, dIdType))
 
 def insertPosts():
-    postsName = ["Marketing Manager", "HR Manager", "Production Manager", "Delivery Person", "Production Worker", "Developper", "Coach leaderShip", "Coach Hapiness"]
+    postsName = ["Marketing Manager", "HR Manager", "Production Manager", "Delivery Person", "Production Worker", "Developper", "Coach Leadership", "Coach Hapiness"]
     listDescription = ["He/She has to negociate all the contract and take care about the comany image", "He/She has to take care about the recrutement of new rookies or expert"
     , "He/She has to take care about the proper functioning of the factory and the deliveries", "They have to deliver packages around the world"
     , "They have to create all the items for the company","They have to developpe the website and the application of the company"
@@ -176,22 +163,6 @@ def switchDep(i):
         return(i % 5)
     elif (15 <= i <= 200):
         return(random.randint(0, 4))
-
-def insertEmpDep():
-    listidEmpl = []
-    isFind = False
-    for i in range(0, 200):
-        isFind = False
-        idEmpl = random.randint(0, 200)
-        idPost = switchPost(i)
-        idDep = switchDep(i)
-        while (isFind != True):
-            if idEmpl in listidEmpl:
-                idEmpl = random.randint(0, 200)
-            else:
-                isFind = True
-                listidEmpl.append(idEmpl)
-        cursor.execute('INSERT INTO employeeDepartments (idEmployeeDepartement, idEmployee, idPost, idDepartments) VALUES (?, ?, ?, ?);', (i, idEmpl, idPost, idDep))
 
 def getDataFromFile(filepath, flag, tab, isName, col):
     with open(filepath, flag) as file:
@@ -224,6 +195,8 @@ def insertEmployees(FirstName, LastName, PhoneNumbers, BirthDates, HireDates):
     HireData = 0
     BirthData = 0
     csv_tab = [PhoneNumbers, BirthDates, HireDates]
+    listidEmpl = []
+    isFind = False
     for i in range(0, 200):
         First = random.choice(FirstName)
         Last = random.choice(LastName)
@@ -231,7 +204,17 @@ def insertEmployees(FirstName, LastName, PhoneNumbers, BirthDates, HireDates):
         Phone, PhonesTab = get_distinct_data(Phone, PhonesTab, csv_tab, 0)
         HireData, HireTab = get_distinct_data(HireData, HireTab, csv_tab, 1)
         BirthData, BirthTab = get_distinct_data(BirthData, BirthTab, csv_tab, 2)
-        cursor.execute('INSERT INTO employees (idEmployee, FirstName, LastName, PhoneNumber, Salary, HireDate, BirthDate) VALUES (?, ?, ?, ?, ?, ?, ?);', (i, First, Last, Phone, Salary, HireData, BirthData))
+        isFind = False
+        idEmpl = random.randint(0, 200)
+        idPost = switchPost(i)
+        idDep = switchDep(i)
+        while (isFind != True):
+            if idEmpl in listidEmpl:
+                idEmpl = random.randint(0, 200)
+            else:
+                isFind = True
+                listidEmpl.append(idEmpl)
+        cursor.execute('INSERT INTO employees (idEmployee, FirstName, LastName, PhoneNumber, Salary, HireDate, BirthDate, idPost, idDepartment) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);', (i, First, Last, Phone, Salary, HireData, BirthData, idPost, idDep))
 
 def insertClients(FirstName, LastName):
     for i in range(0, 3500):
@@ -298,7 +281,6 @@ def main():
     insertDepType()
     insertDep()
     insertPosts()
-    insertEmpDep()
     FirstName = getDataFromFile("csv/prenom.csv", "r", FirstName, True, 0)
     LastName = getDataFromFile("csv/patronymes.csv", "r", LastName, True, 0)
     PhoneNumber = getDataFromFile("csv/phonesFr.csv", "r", PhoneNumber, False, 0)
