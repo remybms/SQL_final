@@ -138,7 +138,7 @@ def insertDep():
         cursor.execute('INSERT INTO departments (idDepartment, Name, idType) VALUES (?, ?, ?);', (i, dName, dIdType))
 
 def insertPosts():
-    postsName = ["Marketing Manager", "HR Manager", "Production Manager", "Delivery Person", "Production Worker", "Developper", "Coach Leadership", "Coach Hapiness"]
+    postsName = ["MarketingManager", "HRManager", "ProductionManager", "DeliveryPerson", "ProductionWorker", "Developper", "CoachLeadership", "CoachHapiness"]
     listDescription = ["He/She has to negociate all the contract and take care about the comany image", "He/She has to take care about the recrutement of new rookies or expert"
     , "He/She has to take care about the proper functioning of the factory and the deliveries", "They have to deliver packages around the world"
     , "They have to create all the items for the company","They have to developpe the website and the application of the company"
