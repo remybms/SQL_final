@@ -30,6 +30,6 @@ CREATE TABLE IF NOT EXISTS employees
     BirthDate DATE,
     idPost INTEGER NOT NULL,
     idDepartment INTEGER NOT NULL,
-    FOREIGN KEY(idPost) REFERENCES posts.idPost,
-    FOREIGN KEY(idDepartement) REFERENCES department.idDepartment
+    FOREIGN KEY(idPost) REFERENCES posts(idPost),
+    FOREIGN KEY(idDepartement) REFERENCES department(idDepartment)
 );
