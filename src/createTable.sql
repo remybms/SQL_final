@@ -1,15 +1,3 @@
-
-CREATE TABLE IF NOT EXISTS employees
-(
-    idEmployee INTEGER NOT NULL PRIMARY KEY,
-    FirstName VARCHAR(50),
-    LastName VARCHAR(50),
-    PhoneNumber VARCHAR(50),
-    Salary INTEGER NOT NULL,
-    HireDate DATE,
-    BirthDate DATE
-);
-
 CREATE TABLE IF NOT EXISTS departmentsType
 (
     idDepartmentType INTEGER NOT NULL PRIMARY KEY,
@@ -31,15 +19,19 @@ CREATE TABLE IF NOT EXISTS posts
     Description VARCHAR(150)
 );
 
-CREATE TABLE IF NOT EXISTS employeeDepartments
+CREATE TABLE IF NOT EXISTS employees
 (
-    idEmployeeDepartement INTEGER NOT NULL PRIMARY KEY,
-    idEmployee INTEGER NOT NULL,
+    idEmployee INTEGER NOT NULL PRIMARY KEY,
+    FirstName VARCHAR(50),
+    LastName VARCHAR(50),
+    PhoneNumber VARCHAR(50),
+    Salary INTEGER NOT NULL,
+    HireDate DATE,
+    BirthDate DATE,
     idPost INTEGER NOT NULL,
-    idDepartments INTEGER NOT NULL,
-    FOREIGN KEY(idEmployee) REFERENCES employees(idEmployee),
-    FOREIGN KEY(idPost) REFERENCES posts(idPost),
-    FOREIGN KEY(idDepartments) REFERENCES departments(idDepartment)
+    idDepartment INTEGER NOT NULL,
+    FOREIGN KEY(idPost) REFERENCES posts.idPost,
+    FOREIGN KEY(idDepartement) REFERENCES department.idDepartment
 );
 
 CREATE TABLE IF NOT EXISTS clients
