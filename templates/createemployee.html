@@ -18,7 +18,9 @@
         <input type="text" name="lastName" placeholder="last name" class="inputright" required>
         <input type="number" name="salary" id="emailInput" placeholder="salary" class="inputmiddle" required>
         <input type="number" name="phoneNumber" placeholder="téléphone" class="inputmiddle" required>
-        <input type="date" name="hireDate" placeholder="hire date" class="inputmiddle" required>
+        <label for="start" class="scaled">Hire Date</label>
+        <input type="date" name="hireDate" placeholder="hire date" class="inputmiddle" id="start"  required>
+        <label for="start" class="scaled">Birth Date</label>
         <input type="date" name="birthDate" placeholder="birthdate" class="inputleft" required>
         <select name="post">
             {{range .Posts}}

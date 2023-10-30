@@ -17,16 +17,6 @@
             <img border="0" alt="Worpany" src="assets/create_employee.png" width="150" height="100">
         </a>
     </p>
-    <form action="/" method="get" class="search">
-        <input type="text" name="firstName" placeholder="first name" class="inputleft">
-        <input type="text" name="lastName" placeholder="last name" class="inputright">
-        <input type="number" name="salary" id="emailInput" placeholder="salary" class="inputmiddle">
-        <input type="number" name="phoneNumber" placeholder="téléphone" class="inputmiddle">
-        <input type="date" name="hireDate" placeholder="hire date" class="inputmiddle">
-        <input type="date" name="birthDate" placeholder="birthdate" class="inputleft">
-        <button type="submit" value="login" id="submit_button" class="submit">submit</button>
-    </form>
-
     <form action="/employeesSorted">
         <select name="sort">
             <option value="employees">employees</option>
@@ -35,7 +25,6 @@
         </select>
         <button type="submit" value="login" id="submit_button" class="submit">submit</button>
     </form>
-
     <div class="employee-list">
         {{range .Employees}}
             <div class="employee">

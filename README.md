@@ -1,6 +1,9 @@
 # SQL_final
 <!--
 
+Database = database/company.db
+Script CreateTable = src/createTable.sql
+
 Création de nouveaux numéros de téléphone
     - Utilisez la commande : python3 generator/generatePhone.py (Au root)
 
