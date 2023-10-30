@@ -43,3 +43,35 @@ func getEmployeesFromDB() EmployeesArray {
 
 	return employees
 }
+
+func convertPostToId(post string) int {
+	if post == "Marketing Manager" {
+		return 0
+	} else if post == "HR Manager" {
+		return 1
+	} else if post == "Production Manager" {
+		return 2
+	} else if post == "Delivery Person" {
+		return 3
+	} else if post == "Production Worker" {
+		return 4
+	} else if post == "Developper" {
+		return 5
+	} else if post == "Coach Leadership" {
+		return 6
+	}
+	return 7
+}
+
+func convertDeptToId(dept string) int {
+	if dept == "Business&Co" {
+		return 0
+	} else if dept == "LikeU" {
+		return 1
+	} else if dept == "WeAreUpon" {
+		return 2
+	} else if dept == "DrinkAlot" {
+		return 3
+	}
+	return 4
+}
