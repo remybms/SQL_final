@@ -16,6 +16,66 @@ type EmployeesArray struct {
 	Employees []Employee
 }
 
+type Post struct {
+	PostName string
+}
+
+type Department struct {
+	DepartmentName string
+}
+
+type PostAndDepartment struct {
+	Posts       []Post
+	Departments []Department
+}
+
+func getPostFromDB() PostAndDepartment {
+	db, err := sql.Open("sqlite3", "database/company.db")
+	if err != nil {
+		panic(err)
+	}
+	posts, err := db.Query("SELECT Name FROM posts")
+	if err != nil {
+		panic(err)
+	}
+	defer posts.Close()
+
+	dept, err := db.Query("SELECT Name FROM departments")
+	if err != nil {
+		panic(err)
+	}
+	defer dept.Close()
+
+	var postsAndDepartments PostAndDepartment
+	for posts.Next() {
+		var post Post
+		err := posts.Scan(&post.PostName)
+		if err != nil {
+			panic(err)
+		}
+		postsAndDepartments.Posts = append(postsAndDepartments.Posts, post)
+	}
+
+	if err = posts.Err(); err != nil {
+		panic(err)
+	}
+
+	for dept.Next() {
+		var department Department
+		err := dept.Scan(&department.DepartmentName)
+		if err != nil {
+			panic(err)
+		}
+		postsAndDepartments.Departments = append(postsAndDepartments.Departments, department)
+	}
+
+	if err = dept.Err(); err != nil {
+		panic(err)
+	}
+
+	return postsAndDepartments
+}
+
 func getEmployeesFromDB() EmployeesArray {
 	db, err := sql.Open("sqlite3", "database/company.db")
 	if err != nil {
@@ -45,19 +105,19 @@ func getEmployeesFromDB() EmployeesArray {
 }
 
 func convertPostToId(post string) int {
-	if post == "Marketing Manager" {
+	if post == "MarketingManager" {
 		return 0
-	} else if post == "HR Manager" {
+	} else if post == "HRManager" {
 		return 1
-	} else if post == "Production Manager" {
+	} else if post == "ProductionManager" {
 		return 2
-	} else if post == "Delivery Person" {
+	} else if post == "DeliveryPerson" {
 		return 3
-	} else if post == "Production Worker" {
+	} else if post == "ProductionWorker" {
 		return 4
 	} else if post == "Developper" {
 		return 5
-	} else if post == "Coach Leadership" {
+	} else if post == "CoachLeadership" {
 		return 6
 	}
 	return 7

@@ -20,6 +20,16 @@
         <input type="number" name="phoneNumber" placeholder="téléphone" class="inputmiddle" required>
         <input type="date" name="hireDate" placeholder="hire date" class="inputmiddle" required>
         <input type="date" name="birthDate" placeholder="birthdate" class="inputleft" required>
+        <select name="post">
+            {{range .Posts}}
+                <option value={{.PostName}}>{{.PostName}}</option>
+            {{end}}
+        </select>
+        <select name="department">
+            {{range .Departments}}
+                <option value={{.DepartmentName}}>{{.DepartmentName}}</option>
+            {{end}}
+        </select>
         <button type="submit" value="login" id="submit_button" class="submit">submit</button>
     </form>
 </body>
