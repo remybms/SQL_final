@@ -23,7 +23,8 @@ func createEmployee(w http.ResponseWriter, r *http.Request) {
 	if error != nil {
 		panic(error)
 	}
-	tmpl.ExecuteTemplate(w, "create", erreur)
+	postsAndDepartments := getPostFromDB()
+	tmpl.ExecuteTemplate(w, "create", postsAndDepartments)
 }
 
 func displayEmployees(w http.ResponseWriter, r *http.Request) {

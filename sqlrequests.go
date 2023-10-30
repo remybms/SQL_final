@@ -2,12 +2,11 @@ package SQL
 
 import (
 	"database/sql"
+	"fmt"
 	"net/http"
 
 	_ "github.com/mattn/go-sqlite3"
 )
-
-var erreur string
 
 func createEmployeeForm(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
@@ -19,6 +18,7 @@ func createEmployeeForm(w http.ResponseWriter, r *http.Request) {
 		birthDate := r.FormValue("birthDate")
 		post := r.FormValue("post")
 		department := r.FormValue("department")
+		fmt.Println(post)
 
 		idPost := convertPostToId(post)
 		idDepartment := convertDeptToId(department)
