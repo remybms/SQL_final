@@ -1,7 +1,6 @@
 package SQL
 
 import (
-	"database/sql"
 	"fmt"
 	"net/http"
 	"text/template"
@@ -11,7 +10,8 @@ import (
 
 func Server() {
 	http.HandleFunc("/", displayEmployees)
-	http.HandleFunc("/createremployee", createEmployee)
+	http.HandleFunc("/createEmployee", createEmployee)
+	http.HandleFunc("/createemployee-form", createEmployeeForm)
 	fileServer := http.FileServer(http.Dir("templates/assets/"))
 	http.Handle("/assets/", http.StripPrefix("/assets", fileServer))
 	fmt.Println("http://localhost:8000/  Server is running in port 8000")
@@ -19,33 +19,11 @@ func Server() {
 }
 
 func createEmployee(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "POST" {
-		firstName := r.FormValue("firstName")
-		lastName := r.FormValue("lastName")
-		phoneNumber := r.FormValue("phoneNumber")
-		salary := r.FormValue("salary")
-		hireDate := r.FormValue("hireDate")
-		birthDate := r.FormValue("birthDate")
-
-		db, err := sql.Open("sqlite3", "database/company.db")
-		if err != nil {
-			panic(err)
-		}
-		defer db.Close()
-
-		stmt, err := db.Prepare("INSERT INTO employees (FirstName, LastName, PhoneNumber, Salary, HireDate, BirthDate) VALUES (?, ?, ?, ?, ?, ?)")
-		if err != nil {
-			panic(err)
-		}
-		defer stmt.Close()
-
-		_, err = stmt.Exec(firstName, lastName, phoneNumber, salary, hireDate, birthDate)
-		if err != nil {
-			panic(err)
-		}
-		defer db.Close()
-		displayEmployees(w, r)
+	tmpl, error := template.ParseGlob("templates/*.html")
+	if error != nil {
+		panic(error)
 	}
+	tmpl.ExecuteTemplate(w, "create", erreur)
 }
 
 func displayEmployees(w http.ResponseWriter, r *http.Request) {
