@@ -2,6 +2,7 @@ package SQL
 
 import (
 	"database/sql"
+	"fmt"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -103,6 +104,43 @@ func getEmployeesFromDB() EmployeesArray {
 		panic(err)
 	}
 
+	return employees
+}
+
+func getEmployeesSortedFromDB(sort string) EmployeesArray {
+	var sorted string
+	if sort == "posts" {
+		sorted = "posts.idPost"
+	} else if sort == "departments" {
+		sorted = "departments.idDepartment"
+	} else {
+		sorted = "employees.idEmployee"
+	}
+	fmt.Println(sort)
+	db, err := sql.Open("sqlite3", "database/company.db")
+	if err != nil {
+		panic(err)
+	}
+	qtext := fmt.Sprintf("SELECT employees.idEmployee, employees.FirstName, employees.LastName, posts.Name, departments.Name FROM employees INNER JOIN posts ON employees.idPost = posts.idPost INNER JOIN departments ON employees.idDepartment = departments.idDepartment ORDER BY %s ASC", sorted)
+	rows, err := db.Query(qtext)
+	if err != nil {
+		panic(err)
+	}
+	defer rows.Close()
+
+	var employees EmployeesArray
+	for rows.Next() {
+		var employee Employee
+		err := rows.Scan(&employee.Id, &employee.FirstName, &employee.LastName, &employee.Post, &employee.Department)
+		if err != nil {
+			panic(err)
+		}
+		employees.Employees = append(employees.Employees, employee)
+	}
+
+	if err = rows.Err(); err != nil {
+		panic(err)
+	}
 	return employees
 }
 
