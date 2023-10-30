@@ -4,21 +4,37 @@
 
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="assets/main.css">
+    <link rel="stylesheet" href="assets/index.css">
     <link rel="shortcut icon" href="assets/images/favicon.ico">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>chut !</title>
+    <title>Worpany</title>
 </head>
 
-
 <body>
-    {{range .Employees}}
-        <div>{{.Id}}</div>
-        <div>{{.FirstName}}</div>
-        <div>{{.LastName}}</div>
-    {{end}}
+    <p>Welcome to the Human resources department!
+        <a href="http://localhost:8000/createEmployee">
+            <img border="0" alt="Worpany" src="assets/create_employee.png" width="150" height="100">
+        </a>
+    </p>
+    <form action="/" method="get" class="search">
+        <input type="text" name="firstName" placeholder="first name" class="inputleft">
+        <input type="text" name="lastName" placeholder="last name" class="inputright">
+        <input type="number" name="salary" id="emailInput" placeholder="salary" class="inputmiddle">
+        <input type="number" name="phoneNumber" placeholder="téléphone" class="inputmiddle">
+        <input type="date" name="hireDate" placeholder="hire date" class="inputmiddle">
+        <input type="date" name="birthDate" placeholder="birthdate" class="inputleft">
+        <button type="submit" value="login" id="submit_button" class="submit">submit</button>
+    </form>
+    <div class="employee-list">
+        {{range .Employees}}
+            <div class="employee">
+                <div class="employee-id">{{.Id}}</div>
+                <div class="employee-firstname">{{.FirstName}}</div>
+                <div class="employee-lastname">{{.LastName}}</div>
+            </div>
+        {{end}}
+    </div>
 </body>
 </html>
-
 {{end}}
