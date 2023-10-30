@@ -29,7 +29,7 @@ func createEmployee(w http.ResponseWriter, r *http.Request) {
 func displayEmployees(w http.ResponseWriter, r *http.Request) {
 	tmpl, error := template.ParseGlob("templates/*.html")
 	if error != nil {
-
+		panic(error)
 	}
 	employees := getEmployeesFromDB()
 
